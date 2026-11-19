@@ -1,6 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { Children, isValidElement, useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
 
 type ChatRole = "user" | "assistant";
 interface ChatMessage {
@@ -17,6 +20,142 @@ const suggestedQuestions = [
   { label: "Giải thích vòng lặp", prompt: "Hãy giải thích sự khác nhau giữa vòng lặp for và while trong Python, kèm ví dụ ngắn." },
   { label: "Bài tập thực hành", prompt: "Cho mình một bài tập Python cơ bản về biến và câu lệnh điều kiện. Hãy đưa gợi ý trước, chưa đưa lời giải." },
 ];
+
+interface CodeElementProps {
+  className?: string;
+  children?: ReactNode;
+}
+
+function getNodeText(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(getNodeText).join("");
+  if (isValidElement<CodeElementProps>(node)) return getNodeText(node.props.children);
+  return "";
+}
+
+function normalizeMarkdownFences(markdown: string): string {
+  const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
+  const normalized: string[] = [];
+  let openFence: { marker: "`" | "~"; length: number } | null = null;
+  let hasClosedFence = false;
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index].replace(/^([ \t]{0,3})(?:\\`){3,}/, (fence) => fence.replace(/\\/g, ""));
+    const match = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+    if (!match) {
+      normalized.push(line);
+      continue;
+    }
+
+    const marker = match[1][0] as "`" | "~";
+    const fenceLength = match[1].length;
+    const hasInfoString = Boolean(match[2].trim());
+
+    if (openFence) {
+      const closesFence = marker === openFence.marker && fenceLength >= openFence.length && !hasInfoString;
+      normalized.push(line);
+      if (closesFence) {
+        openFence = null;
+        hasClosedFence = true;
+      }
+      continue;
+    }
+
+    const isTrailingExtraFence = hasClosedFence && !hasInfoString && lines.slice(index + 1).every((remaining) => !remaining.trim());
+    if (isTrailingExtraFence) continue;
+
+    openFence = { marker, length: fenceLength };
+    normalized.push(line);
+  }
+
+  if (openFence) normalized.push(openFence.marker.repeat(openFence.length));
+  return normalized.join("\n");
+}
+
+function CodeBlock({ code, language, children }: { code: string; language: string; children: ReactNode }) {
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+
+  async function copyCode() {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopyState("copied");
+    } catch {
+      setCopyState("failed");
+    }
+  }
+
+  return (
+    <div className="ai-code-block">
+      <div className="ai-code-toolbar">
+        <span>{language}</span>
+        <button className="ai-code-copy" type="button" onClick={() => void copyCode()} aria-label="Sao chép mã">
+          {copyState === "copied" ? "Đã sao chép" : copyState === "failed" ? "Không sao chép được" : "Sao chép"}
+        </button>
+      </div>
+      <div className="ai-code-scroll">{children}</div>
+    </div>
+  );
+}
+
+const markdownComponents: Components = {
+  a({ href, children }) {
+    return <a href={href} target="_blank" rel="noreferrer">{children}</a>;
+  },
+  blockquote({ children }) {
+    const text = getNodeText(children).trim().toLocaleLowerCase("vi");
+    const kind = /^(lưu ý|chú ý|ghi chú)(?:\s*[:：]|$)/u.test(text)
+      ? "note"
+      : /^(?:ví dụ|example)(?:\s*[:：]|$)/u.test(text)
+        ? "example"
+        : /^(?:mẹo|gợi ý|tip)(?:\s*[:：]|$)/u.test(text)
+          ? "tip"
+          : "quote";
+    return <blockquote className={`ai-md-callout ai-md-callout-${kind}`}>{children}</blockquote>;
+  },
+  code({ className, children }) {
+    return <code className={className ?? "ai-md-inline-code"}>{children}</code>;
+  },
+  h1({ children }) { return <h1 className="ai-md-heading ai-md-h1">{children}</h1>; },
+  h2({ children }) { return <h2 className="ai-md-heading ai-md-h2">{children}</h2>; },
+  h3({ children }) { return <h3 className="ai-md-heading ai-md-h3">{children}</h3>; },
+  li({ children, className }) { return <li className={`ai-md-list-item ${className ?? ""}`}>{children}</li>; },
+  ol({ children, className }) { return <ol className={`ai-md-list ai-md-list-ordered ${className ?? ""}`}>{children}</ol>; },
+  p({ children }) { return <p className="ai-md-paragraph">{children}</p>; },
+  pre({ children }) {
+    const codeElement = Children.toArray(children).find((child) => isValidElement<CodeElementProps>(child));
+    const codeProps = codeElement && isValidElement<CodeElementProps>(codeElement) ? codeElement.props : undefined;
+    const codeClass = codeProps?.className ?? "";
+    const language = codeClass.match(/language-([\w-]+)/)?.[1] ?? (codeClass.includes("hljs") ? "python" : "code");
+    const label = language === "py" || language === "python"
+      ? "Python"
+      : language === "js"
+        ? "JavaScript"
+        : language === "ts"
+          ? "TypeScript"
+          : language.toUpperCase();
+    const code = getNodeText(codeProps?.children ?? children);
+
+    return (
+      <CodeBlock code={code} language={label}>
+        <pre className="ai-code-pre"><code className={codeClass}>{codeProps?.children ?? children}</code></pre>
+      </CodeBlock>
+    );
+  },
+  table({ children }) {
+    return <div className="ai-md-table-wrap" role="region" aria-label="Bảng trong câu trả lời" tabIndex={0}><table>{children}</table></div>;
+  },
+  ul({ children, className }) { return <ul className={`ai-md-list ${className ?? ""}`}>{children}</ul>; },
+};
+
+function AssistantMarkdown({ content }: { content: string }) {
+  return (
+    <div className="ai-markdown-content">
+      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeHighlight, { detect: true, subset: ["python"] }]]} components={markdownComponents}>
+        {normalizeMarkdownFences(content)}
+      </ReactMarkdown>
+    </div>
+  );
+}
 
 function selectHistory(messages: ChatMessage[]) {
   const selected: ChatMessage[] = [];
@@ -143,7 +282,9 @@ export function AiChat() {
                   {message.role === "assistant" && <span className="ai-message-avatar" aria-hidden="true">P</span>}
                   <div className="ai-message-bubble">
                     <span className="ai-message-label">{message.role === "user" ? "Bạn" : "Gia sư Python"}</span>
-                    <p>{message.content}</p>
+                    {message.role === "assistant"
+                      ? <AssistantMarkdown content={message.content} />
+                      : <p>{message.content}</p>}
                   </div>
                 </li>
               ))}
