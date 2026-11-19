@@ -8,6 +8,7 @@ import {
 } from "@/services/ai";
 
 export const runtime = "nodejs";
+export const maxDuration = 300;
 
 const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT = 8;
@@ -154,7 +155,8 @@ export async function POST(request: Request) {
     return json({ reply });
   } catch (error) {
     if (!(error instanceof AiProviderError)) {
-      return json({ error: { code: "AI_UNAVAILABLE", message: "AI gia sư hiện chưa thể trả lời. Vui lòng thử lại sau." } }, 502);
+      console.error(JSON.stringify({ event: "ai_request_failed", errorType: "unexpected" }));
+      return json({ error: { code: "AI_INTERNAL_ERROR", message: "Đã xảy ra lỗi khi xử lý yêu cầu. Vui lòng thử lại sau." } }, 500);
     }
 
     switch (error.kind) {
@@ -162,14 +164,26 @@ export async function POST(request: Request) {
         return json({ error: { code: "AI_NOT_CONFIGURED", message: "AI gia sư chưa được cấu hình. Hãy thêm AI_API_KEY trong biến môi trường phía máy chủ." } }, 503);
       case "provider-configuration":
         return json({ error: { code: "AI_CONFIGURATION_ERROR", message: "Cấu hình dịch vụ AI chưa hợp lệ. Hãy kiểm tra AI_API_KEY, AI_MODEL và AI_BASE_URL trên máy chủ." } }, 503);
-      case "rate-limit":
-        return json({ error: { code: "AI_PROVIDER_RATE_LIMITED", message: "Dịch vụ AI đang bận. Vui lòng đợi một chút rồi thử lại." } }, 429, { "Retry-After": "10" });
-      case "timeout":
+      case "app-timeout":
         return json({ error: { code: "AI_TIMEOUT", message: "AI gia sư mất nhiều thời gian hơn dự kiến. Hãy thử lại." } }, 504);
+      case "provider-invalid-request":
+        return json({ error: { code: "AI_PROVIDER_INVALID_REQUEST", message: "Yêu cầu gửi tới Gemini không hợp lệ. Hãy kiểm tra cấu hình model và thử lại." } }, 502);
+      case "provider-invalid-api-key":
+        return json({ error: { code: "AI_PROVIDER_INVALID_API_KEY", message: "API key Gemini không hợp lệ. Vui lòng kiểm tra biến AI_API_KEY phía máy chủ." } }, 503);
+      case "provider-forbidden":
+        return json({ error: { code: "AI_PROVIDER_FORBIDDEN", message: "API key hiện không có quyền truy cập model Gemini đã cấu hình." } }, 503);
+      case "provider-not-found":
+        return json({ error: { code: "AI_PROVIDER_NOT_FOUND", message: "Không tìm thấy model hoặc endpoint Gemini. Vui lòng kiểm tra AI_MODEL và AI_BASE_URL." } }, 503);
+      case "provider-rate-limit":
+        return json({ error: { code: "AI_PROVIDER_RATE_LIMITED", message: "Gemini đã đạt hạn mức API. Vui lòng đợi rồi thử lại hoặc kiểm tra hạn mức tài khoản." } }, 429);
+      case "provider-server-error":
+        return json({ error: { code: "AI_PROVIDER_ERROR", message: "Dịch vụ AI gặp sự cố khi xử lý yêu cầu. Vui lòng thử lại sau." } }, 502);
+      case "provider-http-error":
+        return json({ error: { code: "AI_PROVIDER_HTTP_ERROR", message: "Gemini trả về lỗi HTTP không mong đợi. Vui lòng thử lại sau." } }, 502);
+      case "network-error":
+        return json({ error: { code: "AI_NETWORK_ERROR", message: "Không thể kết nối dịch vụ AI lúc này. Vui lòng kiểm tra kết nối và thử lại." } }, 502);
       case "invalid-response":
         return json({ error: { code: "AI_INVALID_RESPONSE", message: "Dịch vụ AI trả về phản hồi không hợp lệ. Vui lòng thử lại sau." } }, 502);
-      case "unavailable":
-        return json({ error: { code: "AI_UNAVAILABLE", message: "Không thể kết nối dịch vụ AI lúc này. Vui lòng thử lại sau." } }, 502);
     }
   }
 }

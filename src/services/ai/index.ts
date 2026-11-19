@@ -9,14 +9,32 @@ export type ChatInputResult =
   | { ok: true; messages: AiChatMessage[] }
   | { ok: false; reason: "invalid" | "too-many-messages" | "message-too-long" | "conversation-too-long" };
 
-export type AiProviderFailure = "not-configured" | "provider-configuration" | "rate-limit" | "timeout" | "unavailable" | "invalid-response";
+export type AiProviderFailure =
+  | "not-configured"
+  | "provider-configuration"
+  | "app-timeout"
+  | "provider-invalid-request"
+  | "provider-invalid-api-key"
+  | "provider-forbidden"
+  | "provider-not-found"
+  | "provider-rate-limit"
+  | "provider-server-error"
+  | "provider-http-error"
+  | "network-error"
+  | "invalid-response";
 
 export class AiProviderError extends Error {
-  constructor(readonly kind: AiProviderFailure) {
+  constructor(
+    readonly kind: AiProviderFailure,
+    readonly httpStatus?: number,
+    readonly providerErrorCode?: string,
+  ) {
     super(kind);
     this.name = "AiProviderError";
   }
 }
+
+const GEMINI_REQUEST_TIMEOUT_MS = 60_000;
 
 export const AI_CHAT_LIMITS = {
   bodyBytes: 32_000,
@@ -125,6 +143,54 @@ async function readProviderJson(response: Response): Promise<unknown> {
   }
 }
 
+function getProviderErrorCode(payload: unknown): string | undefined {
+  if (typeof payload !== "object" || payload === null) return undefined;
+  const error = (payload as { error?: unknown }).error;
+  if (typeof error !== "object" || error === null) return undefined;
+  const errorPayload = error as { code?: unknown; status?: unknown };
+  const code = typeof errorPayload.status === "string" ? errorPayload.status : errorPayload.code;
+  const candidate = typeof code === "number" ? String(code) : code;
+  return typeof candidate === "string" && /^[A-Za-z0-9_.-]{1,64}$/.test(candidate)
+    ? candidate
+    : undefined;
+}
+
+function getProviderHttpFailure(status: number): AiProviderFailure {
+  switch (status) {
+    case 400: return "provider-invalid-request";
+    case 401: return "provider-invalid-api-key";
+    case 403: return "provider-forbidden";
+    case 404: return "provider-not-found";
+    case 429: return "provider-rate-limit";
+    default: return status >= 500 ? "provider-server-error" : "provider-http-error";
+  }
+}
+
+async function readProviderErrorCode(response: Response): Promise<string | undefined> {
+  try {
+    const payload = await readProviderJson(response);
+    return getProviderErrorCode(payload);
+  } catch {
+    return undefined;
+  }
+}
+
+function logProviderRequest(
+  durationMs: number,
+  httpStatus: number | null,
+  errorType: AiProviderFailure | "success",
+  providerErrorCode?: string,
+) {
+  console.info(JSON.stringify({
+    event: "ai_provider_request",
+    provider: "gemini",
+    durationMs,
+    httpStatus,
+    errorType,
+    ...(providerErrorCode ? { providerErrorCode } : {}),
+  }));
+}
+
 export async function requestPythonTutorReply(messages: AiChatMessage[]) {
   const apiKey = getAiApiKey();
   if (!apiKey) throw new AiProviderError("not-configured");
@@ -132,7 +198,15 @@ export async function requestPythonTutorReply(messages: AiChatMessage[]) {
   const model = process.env.AI_MODEL?.trim() || "gemini-3.8-flash";
   const url = getCompletionUrl();
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30_000);
+  const startedAt = performance.now();
+  let appTimedOut = false;
+  let httpStatus: number | null = null;
+  let errorType: AiProviderFailure | "success" = "success";
+  let providerErrorCode: string | undefined;
+  const timeout = setTimeout(() => {
+    appTimedOut = true;
+    controller.abort();
+  }, GEMINI_REQUEST_TIMEOUT_MS);
 
   try {
     const response = await fetch(url, {
@@ -149,20 +223,31 @@ export async function requestPythonTutorReply(messages: AiChatMessage[]) {
       signal: controller.signal,
       cache: "no-store",
     });
+    httpStatus = response.status;
 
-    if (response.status === 429) throw new AiProviderError("rate-limit");
-    if ([400, 401, 403, 404].includes(response.status)) throw new AiProviderError("provider-configuration");
-    if (!response.ok) throw new AiProviderError("unavailable");
+    if (!response.ok) {
+      providerErrorCode = await readProviderErrorCode(response);
+      throw new AiProviderError(getProviderHttpFailure(response.status), response.status, providerErrorCode);
+    }
 
     const payload = await readProviderJson(response);
     const reply = readCompletionText(payload);
     if (!reply) throw new AiProviderError("invalid-response");
     return reply;
   } catch (error) {
-    if (error instanceof AiProviderError) throw error;
-    if (controller.signal.aborted) throw new AiProviderError("timeout");
-    throw new AiProviderError("unavailable");
+    if (appTimedOut) {
+      errorType = "app-timeout";
+      throw new AiProviderError("app-timeout", httpStatus ?? undefined, providerErrorCode);
+    }
+    if (error instanceof AiProviderError) {
+      errorType = error.kind;
+      throw error;
+    }
+    errorType = "network-error";
+    throw new AiProviderError("network-error", httpStatus ?? undefined);
   } finally {
     clearTimeout(timeout);
+    if (!controller.signal.aborted) controller.abort();
+    logProviderRequest(Math.round(performance.now() - startedAt), httpStatus, errorType, providerErrorCode);
   }
 }
