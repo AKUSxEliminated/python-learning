@@ -34,7 +34,9 @@ export class AiProviderError extends Error {
   }
 }
 
-const GEMINI_REQUEST_TIMEOUT_MS = 60_000;
+const GROQ_REQUEST_TIMEOUT_MS = 60_000;
+const GROQ_COMPLETIONS_URL = "https://api.groq.com/openai/v1/chat/completions";
+const DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
 
 export const AI_CHAT_LIMITS = {
   bodyBytes: 32_000,
@@ -47,8 +49,8 @@ const SYSTEM_PROMPT = `Bạn là gia sư Python của Python Learning Hub. Luôn
 
 Hãy giải thích khái niệm theo từng bước, dùng ví dụ Python ngắn, dễ chạy và giải thích kết quả. Khi được hỏi về code hoặc lỗi, chỉ ra nguyên nhân, cách sửa, và có thể phân tích từng dòng khi hữu ích. Khuyến khích người học tự suy luận bằng câu hỏi gợi mở thay vì chỉ đưa đáp án; khi người học cần lời giải, hướng dẫn rõ ràng nhưng vẫn giải thích cách nghĩ. Không khẳng định đã chạy hoặc kiểm chứng code nếu bạn chưa thực sự chạy code.`;
 
-export function getAiApiKey() {
-  return process.env.AI_API_KEY?.trim() ?? "";
+export function getGroqApiKey() {
+  return process.env.GROQ_API_KEY?.trim() ?? "";
 }
 
 export function validateChatMessages(value: unknown): ChatInputResult {
@@ -76,23 +78,6 @@ export function validateChatMessages(value: unknown): ChatInputResult {
 
   if (messages.at(-1)?.role !== "user") return { ok: false, reason: "invalid" };
   return { ok: true, messages };
-}
-
-function getCompletionUrl() {
-  const baseUrl = process.env.AI_BASE_URL?.trim() || "https://generativelanguage.googleapis.com/v1beta/openai";
-  let parsed: URL;
-
-  try {
-    parsed = new URL(baseUrl);
-  } catch {
-    throw new AiProviderError("provider-configuration");
-  }
-
-  if (!["https:", "http:"].includes(parsed.protocol) || parsed.username || parsed.password || parsed.search || parsed.hash) {
-    throw new AiProviderError("provider-configuration");
-  }
-
-  return `${parsed.toString().replace(/\/+$/, "")}/chat/completions`;
 }
 
 function readCompletionText(payload: unknown): string | null {
@@ -176,6 +161,7 @@ async function readProviderErrorCode(response: Response): Promise<string | undef
 }
 
 function logProviderRequest(
+  model: string,
   durationMs: number,
   httpStatus: number | null,
   errorType: "provider_http_error" | "network_error" | "app_timeout" | "invalid_response" | "success",
@@ -185,7 +171,8 @@ function logProviderRequest(
 ) {
   console.info(JSON.stringify({
     event: "ai_provider_request",
-    provider: "gemini",
+    provider: "groq",
+    model,
     durationMs,
     httpStatus,
     errorType,
@@ -204,11 +191,10 @@ function getSafeNetworkCauseCode(error: unknown): string | undefined {
 }
 
 export async function requestPythonTutorReply(messages: AiChatMessage[]) {
-  const apiKey = getAiApiKey();
+  const apiKey = getGroqApiKey();
   if (!apiKey) throw new AiProviderError("not-configured");
 
-  const model = process.env.AI_MODEL?.trim() || "gemini-3.8-flash";
-  const url = getCompletionUrl();
+  const model = process.env.GROQ_MODEL?.trim() || DEFAULT_GROQ_MODEL;
   const controller = new AbortController();
   const startedAt = performance.now();
   let appTimedOut = false;
@@ -220,10 +206,10 @@ export async function requestPythonTutorReply(messages: AiChatMessage[]) {
   const timeout = setTimeout(() => {
     appTimedOut = true;
     controller.abort();
-  }, GEMINI_REQUEST_TIMEOUT_MS);
+  }, GROQ_REQUEST_TIMEOUT_MS);
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(GROQ_COMPLETIONS_URL, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -273,6 +259,6 @@ export async function requestPythonTutorReply(messages: AiChatMessage[]) {
   } finally {
     clearTimeout(timeout);
     if (!controller.signal.aborted) controller.abort();
-    logProviderRequest(Math.round(performance.now() - startedAt), httpStatus, errorType, providerErrorCode);
+    logProviderRequest(model, Math.round(performance.now() - startedAt), httpStatus, errorType, providerErrorCode, reason, networkCauseCode);
   }
 }
