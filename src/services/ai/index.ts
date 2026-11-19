@@ -178,8 +178,10 @@ async function readProviderErrorCode(response: Response): Promise<string | undef
 function logProviderRequest(
   durationMs: number,
   httpStatus: number | null,
-  errorType: AiProviderFailure | "success",
+  errorType: "provider_http_error" | "network_error" | "app_timeout" | "invalid_response" | "success",
   providerErrorCode?: string,
+  reason?: string,
+  networkCauseCode?: string,
 ) {
   console.info(JSON.stringify({
     event: "ai_provider_request",
@@ -188,7 +190,17 @@ function logProviderRequest(
     httpStatus,
     errorType,
     ...(providerErrorCode ? { providerErrorCode } : {}),
+    ...(reason ? { reason } : {}),
+    ...(networkCauseCode ? { networkCauseCode } : {}),
   }));
+}
+
+function getSafeNetworkCauseCode(error: unknown): string | undefined {
+  if (typeof error !== "object" || error === null || !("cause" in error)) return undefined;
+  const cause = error.cause;
+  if (typeof cause !== "object" || cause === null || !("code" in cause)) return undefined;
+  const code = cause.code;
+  return typeof code === "string" && /^[A-Z][A-Z0-9_]{0,63}$/.test(code) ? code : undefined;
 }
 
 export async function requestPythonTutorReply(messages: AiChatMessage[]) {
@@ -201,8 +213,10 @@ export async function requestPythonTutorReply(messages: AiChatMessage[]) {
   const startedAt = performance.now();
   let appTimedOut = false;
   let httpStatus: number | null = null;
-  let errorType: AiProviderFailure | "success" = "success";
+  let errorType: "provider_http_error" | "network_error" | "app_timeout" | "invalid_response" | "success" = "success";
   let providerErrorCode: string | undefined;
+  let reason: string | undefined;
+  let networkCauseCode: string | undefined;
   const timeout = setTimeout(() => {
     appTimedOut = true;
     controller.abort();
@@ -227,6 +241,8 @@ export async function requestPythonTutorReply(messages: AiChatMessage[]) {
 
     if (!response.ok) {
       providerErrorCode = await readProviderErrorCode(response);
+      errorType = "provider_http_error";
+      reason = "provider_returned_http_error";
       throw new AiProviderError(getProviderHttpFailure(response.status), response.status, providerErrorCode);
     }
 
@@ -236,14 +252,23 @@ export async function requestPythonTutorReply(messages: AiChatMessage[]) {
     return reply;
   } catch (error) {
     if (appTimedOut) {
-      errorType = "app-timeout";
+      errorType = "app_timeout";
+      reason = "application_deadline_exceeded";
       throw new AiProviderError("app-timeout", httpStatus ?? undefined, providerErrorCode);
     }
     if (error instanceof AiProviderError) {
-      errorType = error.kind;
+      if (error.kind === "invalid-response") {
+        errorType = "invalid_response";
+        reason = "provider_response_invalid";
+      } else if (error.kind.startsWith("provider-")) {
+        errorType = "provider_http_error";
+        reason ??= "provider_http_error";
+      }
       throw error;
     }
-    errorType = "network-error";
+    errorType = "network_error";
+    networkCauseCode = getSafeNetworkCauseCode(error);
+    reason = networkCauseCode ? "network_cause_code_available" : "fetch_rejected";
     throw new AiProviderError("network-error", httpStatus ?? undefined);
   } finally {
     clearTimeout(timeout);
