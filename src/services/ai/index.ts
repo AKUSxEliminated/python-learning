@@ -36,7 +36,7 @@ export class AiProviderError extends Error {
 
 const GROQ_REQUEST_TIMEOUT_MS = 60_000;
 const GROQ_COMPLETIONS_URL = "https://api.groq.com/openai/v1/chat/completions";
-const DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
+const DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b";
 
 export const AI_CHAT_LIMITS = {
   bodyBytes: 32_000,
