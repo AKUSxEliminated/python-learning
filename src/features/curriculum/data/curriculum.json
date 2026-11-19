@@ -1,0 +1,828 @@
+[
+  {
+    "slug": "co-ban",
+    "name": "Cơ bản",
+    "rank": 1,
+    "description": "Làm quen với Python, cách viết chương trình và những cấu trúc dữ liệu đầu tiên.",
+    "courseTitle": "Python từ nền tảng",
+    "chapters": [
+      {
+        "slug": "bat-dau-voi-python",
+        "title": "Bắt đầu với Python",
+        "lessons": [
+          {
+            "slug": "gioi-thieu-python",
+            "title": "Giới thiệu Python",
+            "minutes": 25,
+            "objectives": [
+              "Mô tả Python được dùng để giải quyết vấn đề gì.",
+              "Phân biệt mã nguồn, trình thông dịch và kết quả chương trình."
+            ],
+            "theory": [
+              "Python là ngôn ngữ bậc cao, có cú pháp dễ đọc và hệ sinh thái thư viện phong phú. Python thường được dùng cho tự động hóa, phân tích dữ liệu, dịch vụ web, kiểm thử và giáo dục. Một ngôn ngữ phù hợp không thay thế việc xác định rõ đầu vào, xử lý và đầu ra của chương trình.",
+              "Trình thông dịch đọc và thực thi mã Python. Bạn có thể chạy lệnh trong chế độ tương tác hoặc lưu chương trình trong tệp .py. Python phân biệt chữ hoa và chữ thường; thụt lề là một phần cú pháp nên các khối lệnh cần được căn nhất quán."
+            ],
+            "code": "print(\"Xin chào, Python!\")\nname = \"Linh\"\nprint(f\"Chào {name}, chúng ta bắt đầu học nhé.\")",
+            "explanation": "print() gửi giá trị ra màn hình. Dòng gán tạo tên name tham chiếu tới chuỗi. f-string đặt biểu thức trong dấu ngoặc nhọn để tạo văn bản từ giá trị hiện tại.",
+            "output": "Xin chào, Python!\nChào Linh, chúng ta bắt đầu học nhé.",
+            "mistakes": [
+              "Quên đặt chuỗi trong dấu nháy hoặc mở/đóng dấu nháy không khớp.",
+              "Dùng Tab và dấu cách lẫn lộn khi thụt lề trong cùng một tệp."
+            ],
+            "summary": [
+              "Python thực thi mã thông qua trình thông dịch.",
+              "Tên và chuỗi phân biệt chữ hoa/chữ thường.",
+              "Thụt lề xác định cấu trúc khối lệnh."
+            ],
+            "exercises": [
+              "In ra tên, mục tiêu học tập và phiên bản Python bạn đang dùng.",
+              "Sửa một chương trình có lỗi thiếu dấu nháy rồi giải thích thông báo lỗi."
+            ]
+          },
+          {
+            "slug": "cai-dat-python",
+            "title": "Cài đặt và môi trường Python",
+            "minutes": 30,
+            "objectives": [
+              "Kiểm tra trình thông dịch bằng terminal.",
+              "Chạy được một tệp .py và hiểu vì sao dự án nên có môi trường ảo."
+            ],
+            "theory": [
+              "Cài Python 3 từ nguồn phù hợp với hệ điều hành, sau đó kiểm tra bằng python --version hoặc py --version trên Windows. Nếu máy có nhiều phiên bản, lệnh python3 thường dùng trên macOS/Linux. Tên lệnh phụ thuộc cấu hình PATH và trình cài đặt.",
+              "Môi trường ảo (venv) cô lập các gói của dự án để chúng không ảnh hưởng dự án khác. Tạo bằng python -m venv .venv; kích hoạt bằng .venv\\Scripts\\Activate.ps1 trên PowerShell hoặc source .venv/bin/activate trên macOS/Linux. Cài gói bên trong môi trường bằng python -m pip."
+            ],
+            "code": "# app.py\npython_version = (3, 12)\nprint(f\"Ứng dụng mẫu chạy trên Python {python_version[0]}.{python_version[1]}\")",
+            "explanation": "Lưu đoạn mã vào app.py rồi chạy bằng python app.py (hoặc py app.py trên Windows). Bộ tuple chỉ minh họa thông tin phiên bản; phiên bản thật nên được đọc từ môi trường chạy, không ghi cứng trong ứng dụng.",
+            "output": "Ứng dụng mẫu chạy trên Python 3.12",
+            "mistakes": [
+              "Cài Python nhưng chưa thêm vào PATH nên terminal không tìm thấy lệnh.",
+              "Cài gói bằng pip của một Python khác với interpreter đang chạy dự án; python -m pip giúp ghép đúng interpreter."
+            ],
+            "summary": [
+              "Kiểm tra interpreter trước khi cài gói.",
+              "Tệp Python thường có phần mở rộng .py.",
+              "Dùng venv để cô lập dependency từng dự án."
+            ],
+            "exercises": [
+              "Tạo tệp hello.py, chạy từ terminal và chụp lại lệnh cùng kết quả.",
+              "Tạo môi trường .venv và ghi lại lệnh kích hoạt phù hợp hệ điều hành."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "nen-tang-cu-phap",
+        "title": "Biến, kiểu dữ liệu và toán tử",
+        "lessons": [
+          {
+            "slug": "bien-va-kieu-du-lieu",
+            "title": "Biến và kiểu dữ liệu",
+            "minutes": 35,
+            "objectives": [
+              "Gán và cập nhật giá trị qua tên biến.",
+              "Nhận biết int, float, str, bool và chuyển kiểu an toàn."
+            ],
+            "theory": [
+              "Trong Python, phép gán liên kết một tên với một đối tượng; không cần khai báo kiểu trước. int biểu diễn số nguyên, float biểu diễn số thực gần đúng, str là văn bản và bool chỉ có True hoặc False. type(value) cho biết kiểu tại thời điểm chạy.",
+              "input() luôn trả về str. Khi dữ liệu biểu diễn con số, cần chuyển bằng int() hoặc float() trước khi tính. Phép chuyển có thể gây ValueError nếu văn bản không phải dạng số hợp lệ. Dùng tên biến mô tả ý nghĩa thay vì tên một ký tự khi logic không quá ngắn."
+            ],
+            "code": "student_name = \"An\"\nage_text = \"19\"\nage = int(age_text)\nis_adult = age >= 18\nprint(type(student_name).__name__)\nprint(age + 1, is_adult)",
+            "explanation": "age_text là chuỗi dù chỉ chứa chữ số. int() tạo giá trị số nguyên mới để có thể cộng. Biểu thức so sánh trả về bool.",
+            "output": "str\n20 True",
+            "mistakes": [
+              "Cộng trực tiếp số nguyên với chuỗi, ví dụ 19 + \"1\".",
+              "Gọi int() với nội dung không phải số mà không xử lý ValueError."
+            ],
+            "summary": [
+              "Python gắn kiểu với đối tượng, không khai báo kiểu bắt buộc cho tên.",
+              "input() trả về str.",
+              "Chuyển kiểu có thể thất bại và cần xử lý dữ liệu không hợp lệ."
+            ],
+            "exercises": [
+              "Đọc chuỗi nhiệt độ, chuyển sang float và đổi Celsius sang Fahrenheit.",
+              "In kiểu dữ liệu của ba biến và giải thích kết quả."
+            ]
+          },
+          {
+            "slug": "toan-tu",
+            "title": "Toán tử và biểu thức",
+            "minutes": 30,
+            "objectives": [
+              "Sử dụng toán tử số học, so sánh và logic.",
+              "Đọc thứ tự ưu tiên và dùng ngoặc để làm rõ ý định."
+            ],
+            "theory": [
+              "Các toán tử số học gồm +, -, *, /, //, %, **. Dấu / luôn tạo phép chia thường; // lấy thương nguyên theo hướng âm vô cực; % lấy phần dư tương ứng. ** là lũy thừa. Ngoặc giúp biểu đạt nhóm phép tính một cách tường minh.",
+              "Toán tử so sánh tạo bool. and, or và not kết hợp điều kiện và có short-circuit: biểu thức bên phải có thể không được đánh giá khi kết quả đã xác định. Không nên dựa vào ép kiểu ngầm phức tạp; ưu tiên biểu thức dễ đọc."
+            ],
+            "code": "total_minutes = 137\nhours = total_minutes // 60\nminutes = total_minutes % 60\nprint(hours, minutes)\nprint(3 ** 2, 10 / 4)",
+            "explanation": "Chia lấy phần nguyên và phần dư tách 137 phút thành giờ/phút. Dấu / tạo float còn ** tính lũy thừa.",
+            "output": "2 17\n9 2.5",
+            "mistakes": [
+              "Dùng / khi cần số nguyên, rồi bất ngờ nhận float.",
+              "Quên ưu tiên toán tử hoặc không đặt ngoặc khiến biểu thức khó hiểu."
+            ],
+            "summary": [
+              "//, %, / và ** có ý nghĩa khác nhau.",
+              "So sánh trả về bool.",
+              "Dùng ngoặc để làm rõ nhóm tính toán."
+            ],
+            "exercises": [
+              "Đổi tổng số giây thành giờ, phút, giây bằng // và %.",
+              "Viết điều kiện kiểm tra một số nằm trong khoảng đóng [10, 20]."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "dieu-khien-luong-chay",
+        "title": "Điều khiển luồng chương trình",
+        "lessons": [
+          {
+            "slug": "cau-lenh-dieu-kien",
+            "title": "Câu lệnh điều kiện",
+            "minutes": 30,
+            "objectives": [
+              "Dùng if, elif và else để chọn nhánh.",
+              "Đánh giá truth value và viết điều kiện dễ đọc."
+            ],
+            "theory": [
+              "if chạy khối lệnh khi điều kiện đúng; elif kiểm tra điều kiện kế tiếp; else chạy khi không nhánh nào trước đó đúng. Mỗi dòng điều kiện kết thúc bằng dấu hai chấm và phần thân thụt vào cùng mức.",
+              "Số 0, None, chuỗi rỗng và container rỗng có truth value False; các đối tượng còn lại thường là True. Khi cần so sánh với None, viết is None. Kết hợp điều kiện bằng and/or nhưng tránh biểu thức quá dài."
+            ],
+            "code": "score = 82\nif score >= 90:\n    level = \"Xuất sắc\"\nelif score >= 70:\n    level = \"Đạt\"\nelse:\n    level = \"Cần ôn thêm\"\nprint(level)",
+            "explanation": "Các nhánh được kiểm tra từ trên xuống. Với score 82, điều kiện đầu sai và điều kiện elif đúng nên những nhánh sau không chạy.",
+            "output": "Đạt",
+            "mistakes": [
+              "Viết = trong điều kiện thay vì == để so sánh bằng.",
+              "Đặt điều kiện tổng quát trước điều kiện cụ thể, khiến nhánh cụ thể không bao giờ tới được."
+            ],
+            "summary": [
+              "if/elif/else chọn một nhánh phù hợp.",
+              "Thụt lề tạo khối lệnh.",
+              "Dùng is None để kiểm tra None."
+            ],
+            "exercises": [
+              "Phân loại nhiệt độ thành lạnh, mát, ấm và nóng với các ngưỡng bạn định nghĩa.",
+              "Kiểm tra tên đăng nhập không rỗng và độ dài tối thiểu."
+            ]
+          },
+          {
+            "slug": "vong-lap",
+            "title": "Vòng lặp for và while",
+            "minutes": 40,
+            "objectives": [
+              "Lặp qua iterable bằng for và range.",
+              "Dùng while, break và continue mà không tạo vòng lặp vô hạn."
+            ],
+            "theory": [
+              "for lấy lần lượt phần tử từ iterable như list, chuỗi hoặc range. range(stop) tạo dãy số bắt đầu từ 0 và không gồm stop; có thể truyền start, stop, step. enumerate() cung cấp cả chỉ số và giá trị.",
+              "while lặp khi điều kiện còn đúng. Vòng lặp cần tiến tới trạng thái dừng. break kết thúc vòng gần nhất; continue bỏ phần còn lại của lượt hiện tại. Tránh thay đổi danh sách đang duyệt nếu điều đó làm mất phần tử hoặc khó dự đoán."
+            ],
+            "code": "scores = [7, 9, 8]\ntotal = 0\nfor index, score in enumerate(scores, start=1):\n    total += score\n    print(f\"Lần {index}: {score}\")\nprint(f\"Trung bình: {total / len(scores):.1f}\")",
+            "explanation": "enumerate bắt đầu chỉ số từ 1 theo yêu cầu hiển thị. total được cập nhật ở mỗi lượt, cuối cùng chia cho số điểm.",
+            "output": "Lần 1: 7\nLần 2: 9\nLần 3: 8\nTrung bình: 8.0",
+            "mistakes": [
+              "Tạo while mà không cập nhật biến điều kiện, dẫn đến lặp vô hạn.",
+              "Nghĩ rằng range(1, 4) bao gồm cả 4; thực tế điểm dừng không được lấy."
+            ],
+            "summary": [
+              "for phù hợp khi duyệt iterable.",
+              "while phù hợp khi điều kiện dừng chưa biết trước.",
+              "break và continue làm thay đổi luồng của vòng lặp."
+            ],
+            "exercises": [
+              "Tính tổng các số chẵn từ 1 đến 100.",
+              "Duyệt danh sách và tìm vị trí xuất hiện đầu tiên của một giá trị, dừng bằng break."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "du-lieu-va-on-tap",
+        "title": "Cấu trúc dữ liệu và ôn tập",
+        "lessons": [
+          {
+            "slug": "list-tuple-set-dictionary",
+            "title": "List, Tuple, Set và Dictionary",
+            "minutes": 45,
+            "objectives": [
+              "Chọn cấu trúc dữ liệu phù hợp cho danh sách, bản ghi, tập hợp và ánh xạ.",
+              "Thêm, truy cập và duyệt phần tử an toàn."
+            ],
+            "theory": [
+              "list có thứ tự, thay đổi được và có thể chứa phần tử trùng; tuple có thứ tự nhưng không đổi sau khi tạo; set chứa giá trị duy nhất và không đảm bảo thứ tự hiển thị; dict ánh xạ khóa sang giá trị, khóa phải hashable.",
+              "Dùng list khi cần trình tự có thể chỉnh sửa; tuple cho nhóm giá trị cố định; set cho kiểm tra thành viên/loại trùng; dict cho tra cứu theo khóa. list/set/dict comprehension hữu ích khi phép biến đổi ngắn, nhưng vòng lặp thường rõ hơn nếu có nhiều nhánh."
+            ],
+            "code": "topics = [\"biến\", \"vòng lặp\", \"biến\"]\nunique_topics = set(topics)\nlesson_minutes = {\"biến\": 25, \"vòng lặp\": 40}\nprint(len(topics), len(unique_topics))\nprint(lesson_minutes[\"vòng lặp\"])",
+            "explanation": "Set loại giá trị trùng trong topics. Dictionary tra thời lượng bằng khóa; truy cập khóa không tồn tại gây KeyError, có thể dùng get() khi thiếu khóa là tình huống hợp lệ.",
+            "output": "3 2\n40",
+            "mistakes": [
+              "Mong set giữ nguyên thứ tự hoặc dùng list làm khóa dictionary.",
+              "Gán một list mới cho nhiều biến rồi tưởng chúng độc lập; cả hai có thể cùng tham chiếu một list."
+            ],
+            "summary": [
+              "Chọn container theo thao tác và ý nghĩa dữ liệu.",
+              "List và dict mutable; tuple và set có đặc tính khác.",
+              "Dùng dict.get() khi khóa có thể không tồn tại."
+            ],
+            "exercises": [
+              "Đếm tần suất từng từ trong câu bằng dictionary.",
+              "Tìm các phần tử xuất hiện trong cả hai danh sách bằng set."
+            ]
+          },
+          {
+            "slug": "ham",
+            "title": "Hàm và tái sử dụng mã",
+            "minutes": 40,
+            "objectives": [
+              "Tạo hàm nhận tham số và trả kết quả bằng return.",
+              "Phân biệt tham số, đối số và biến cục bộ."
+            ],
+            "theory": [
+              "def tạo một hàm. Tham số là tên trong phần định nghĩa; đối số là giá trị truyền khi gọi. return kết thúc hàm và gửi kết quả về nơi gọi; print chỉ hiển thị và mặc định hàm vẫn trả None.",
+              "Biến khai báo trong hàm thuộc phạm vi cục bộ. Tham số mặc định được đánh giá một lần khi định nghĩa hàm nên không dùng list/dict mutable làm giá trị mặc định. Tách logic thành hàm nhỏ giúp kiểm thử và đặt tên thể hiện mục đích."
+            ],
+            "code": "def average(values):\n    if not values:\n        raise ValueError(\"Danh sách không được rỗng\")\n    return sum(values) / len(values)\n\nprint(f\"Điểm trung bình: {average([8, 9, 7]):.1f}\")",
+            "explanation": "Hàm kiểm tra đầu vào rỗng trước khi chia. raise ValueError báo rằng lời gọi vi phạm điều kiện của hàm; người gọi có thể xử lý ngoại lệ.",
+            "output": "Điểm trung bình: 8.0",
+            "mistakes": [
+              "Dùng print thay return rồi cố gắng tính tiếp bằng kết quả None.",
+              "Dùng def add_item(item, items=[]), khiến list mặc định được dùng lại giữa các lần gọi."
+            ],
+            "summary": [
+              "Hàm gom logic có tên và có thể tái sử dụng.",
+              "return khác với print.",
+              "Giá trị mặc định nên bất biến; dùng None cho container tùy chọn."
+            ],
+            "exercises": [
+              "Viết hàm chuyển phút thành tuple (giờ, phút).",
+              "Viết hàm chuẩn hóa tên: bỏ khoảng trắng hai đầu và viết hoa chữ cái đầu."
+            ]
+          },
+          {
+            "slug": "on-tap-co-ban",
+            "title": "Ôn tập tổng hợp cấp cơ bản",
+            "minutes": 50,
+            "objectives": [
+              "Kết hợp hàm, vòng lặp, điều kiện và dictionary.",
+              "Chia bài toán thành các bước nhỏ có thể kiểm tra."
+            ],
+            "theory": [
+              "Một chương trình nhỏ thường gồm: xác định cấu trúc dữ liệu đầu vào, viết hàm chuyển đổi hoặc tổng hợp, kiểm tra các trường hợp biên và trình bày kết quả. Trước khi viết code, hãy thử một ví dụ nhỏ bằng tay.",
+              "Cấu trúc lặp + điều kiện + dictionary cho phép tổng hợp dữ liệu mà không cần thư viện ngoài. Chọn tên biến rõ nghĩa và để mỗi hàm thực hiện một nhiệm vụ. Trường hợp danh sách rỗng cần được xử lý có chủ ý."
+            ],
+            "code": "def count_passed(scores, threshold=5):\n    result = {\"đạt\": 0, \"cần ôn\": 0}\n    for score in scores:\n        if score >= threshold:\n            result[\"đạt\"] += 1\n        else:\n            result[\"cần ôn\"] += 1\n    return result\n\nprint(count_passed([8, 4, 6, 3]))",
+            "explanation": "Hàm khởi tạo bộ đếm, phân loại từng điểm và trả dictionary. Dữ liệu rỗng trả bộ đếm 0; ngưỡng có thể thay đổi khi gọi hàm.",
+            "output": "{'đạt': 2, 'cần ôn': 2}",
+            "mistakes": [
+              "Khởi tạo biến đếm bên trong vòng lặp làm bộ đếm bị đặt lại mỗi lượt.",
+              "Chỉ thử trường hợp thông thường mà bỏ qua danh sách rỗng hoặc điểm đúng ngưỡng."
+            ],
+            "summary": [
+              "Bắt đầu bằng dữ liệu nhỏ và xác định đầu ra mong muốn.",
+              "Tách phép xử lý thành hàm có hợp đồng rõ ràng.",
+              "Kiểm tra trường hợp biên, bao gồm input rỗng."
+            ],
+            "exercises": [
+              "Mở rộng hàm để trả thêm điểm cao nhất và điểm trung bình.",
+              "Viết test thủ công cho danh sách rỗng, mọi điểm đạt và mọi điểm chưa đạt."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "trung-cap",
+    "name": "Trung cấp",
+    "rank": 2,
+    "description": "Làm việc với chuỗi, tệp, module và mô hình đối tượng để xây chương trình có cấu trúc.",
+    "courseTitle": "Python trong ứng dụng thực tế",
+    "chapters": [
+      {
+        "slug": "chuoi-va-du-lieu",
+        "title": "Chuỗi và dữ liệu",
+        "lessons": [
+          {
+            "slug": "xu-ly-chuoi",
+            "title": "Xử lý chuỗi",
+            "minutes": 35,
+            "objectives": [
+              "Biến đổi và tra cứu chuỗi bằng phương thức chuẩn.",
+              "Định dạng chuỗi an toàn và hiểu chuỗi là immutable."
+            ],
+            "theory": [
+              "str là chuỗi Unicode và immutable: các phương thức như strip(), lower(), replace() trả về chuỗi mới, không sửa tại chỗ. Dùng in để kiểm tra chuỗi con; dùng split/join để tách và ghép theo dấu phân cách.",
+              "f-string thuận tiện cho chuỗi nội bộ. Với truy vấn SQL hoặc lệnh ngoài, không ghép chuỗi tùy tiện; dùng API tham số hóa tương ứng. Dữ liệu văn bản từ người dùng có thể chứa khoảng trắng, chữ hoa/thường hoặc dấu tiếng Việt, vì vậy cần quy định rõ cách chuẩn hóa."
+            ],
+            "code": "raw_name = \"  Nguyễn An  \"\nname = raw_name.strip()\nwords = \"python hoc rat vui\".split()\nslug = \"-\".join(words)\nprint(name)\nprint(f\"xin chào, {name}!\")\nprint(slug)",
+            "explanation": "strip loại khoảng trắng ở hai đầu; split tách theo khoảng trắng; join dùng dấu gạch nối để nối các từ. raw_name vẫn giữ nguyên vì chuỗi không đổi tại chỗ.",
+            "output": "Nguyễn An\nxin chào, Nguyễn An!\npython-hoc-rat-vui",
+            "mistakes": [
+              "Gọi strip() nhưng bỏ qua giá trị trả về.",
+              "Dùng split(' ') khi dữ liệu có nhiều khoảng trắng liên tiếp và mong các mục rỗng biến mất; split() không đối số phù hợp hơn."
+            ],
+            "summary": [
+              "Chuỗi immutable; phương thức trả chuỗi mới.",
+              "split/join hữu ích khi phân tích văn bản.",
+              "f-string dành cho định dạng hiển thị."
+            ],
+            "exercises": [
+              "Viết hàm chuẩn hóa một dòng tiêu đề: bỏ khoảng trắng thừa và gộp các khoảng trắng liên tiếp.",
+              "Đếm số lần xuất hiện của một từ, không phân biệt hoa thường."
+            ]
+          },
+          {
+            "slug": "lam-viec-voi-du-lieu",
+            "title": "Làm việc với dữ liệu",
+            "minutes": 45,
+            "objectives": [
+              "Đọc dữ liệu có cấu trúc từ JSON và CSV.",
+              "Kiểm tra dữ liệu trước khi biến đổi hoặc tổng hợp."
+            ],
+            "theory": [
+              "JSON ánh xạ tự nhiên sang dict, list, str, int, float, bool và None. json.loads đọc chuỗi; json.load đọc file. CSV là bảng văn bản, mỗi hàng có thể đọc thành dict bằng csv.DictReader. Luôn xác định encoding và kiểm tra tên cột.",
+              "Dữ liệu bên ngoài không mặc nhiên đúng: trường có thể thiếu, sai kiểu hoặc rỗng. Tách bước parse, validate và xử lý; báo lỗi rõ ràng khi dữ liệu không đáp ứng yêu cầu. Với tập lớn, đọc tuần tự hoặc xử lý theo lô thay vì luôn nạp toàn bộ vào bộ nhớ."
+            ],
+            "code": "import json\n\nrecord = json.loads('{\"name\": \"Mai\", \"hours\": 2.5}')\nif not isinstance(record.get(\"hours\"), (int, float)):\n    raise ValueError(\"hours phải là số\")\nprint(record[\"name\"], record[\"hours\"] * 60)",
+            "explanation": "json.loads chuyển chuỗi thành dictionary. get() cho phép kiểm tra giá trị có thiếu; isinstance giúp xác nhận kiểu trước khi tính.",
+            "output": "Mai 150.0",
+            "mistakes": [
+              "Dùng json.load cho chuỗi thay vì json.loads, hoặc ngược lại.",
+              "Giả định dữ liệu luôn có khóa và đúng kiểu, dẫn đến KeyError/TypeError khó hiểu."
+            ],
+            "summary": [
+              "JSON phù hợp dữ liệu lồng nhau; CSV phù hợp bảng.",
+              "Parse không đồng nghĩa với validate.",
+              "Làm rõ encoding và xử lý trường thiếu."
+            ],
+            "exercises": [
+              "Đọc một chuỗi JSON có danh sách công việc rồi lọc các công việc đã hoàn tất.",
+              "Dùng DictReader để tính tổng một cột số và xử lý hàng có giá trị rỗng."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "module-loi-va-tep",
+        "title": "Module, ngoại lệ và tệp",
+        "lessons": [
+          {
+            "slug": "module-va-package",
+            "title": "Module và Package",
+            "minutes": 35,
+            "objectives": [
+              "Tách mã thành module và import theo tên.",
+              "Hiểu package, điểm bắt đầu chương trình và môi trường ảo."
+            ],
+            "theory": [
+              "Một module thường là một tệp .py. Package gom các module theo thư mục để chia namespace. Import module chạy phần mã ở cấp module lần đầu và tạo tên để truy cập; tránh import * vì khó biết tên nào được đưa vào phạm vi.",
+              "Đặt mã chạy trực tiếp trong if __name__ == \"__main__\": để module vừa import được vừa chạy như chương trình. Dự án nên khai báo dependency và dùng môi trường ảo; không đặt tệp dự án trùng tên thư viện chuẩn như json.py hoặc random.py."
+            ],
+            "code": "# math_tools.py\ndef circle_area(radius):\n    return 3.141592653589793 * radius ** 2\n\n# app.py\nfrom math_tools import circle_area\nprint(round(circle_area(2), 2))",
+            "explanation": "Hàm được định nghĩa trong math_tools.py rồi import rõ ràng vào app.py. Trong thực tế có thể dùng math.pi để lấy hằng số chính xác của thư viện chuẩn.",
+            "output": "12.57",
+            "mistakes": [
+              "Đặt tên tệp json.py làm che khuất module json chuẩn.",
+              "Để lệnh chạy ứng dụng ở cấp module khiến nó chạy ngoài ý muốn khi module được import."
+            ],
+            "summary": [
+              "Module là đơn vị mã có thể import.",
+              "Package tổ chức module theo namespace.",
+              "Dùng __main__ guard cho điểm vào chương trình."
+            ],
+            "exercises": [
+              "Tách hàm chuyển đổi đơn vị sang module conversions.py rồi import từ main.py.",
+              "Tạo package nhỏ gồm hai module và vẽ sơ đồ quan hệ import."
+            ]
+          },
+          {
+            "slug": "xu-ly-ngoai-le",
+            "title": "Xử lý ngoại lệ",
+            "minutes": 40,
+            "objectives": [
+              "Phân biệt lỗi cú pháp và ngoại lệ lúc chạy.",
+              "Bắt đúng loại lỗi, dùng else/finally và chủ động raise."
+            ],
+            "theory": [
+              "Ngoại lệ biểu thị tình huống làm gián đoạn luồng bình thường. try chứa thao tác có thể lỗi; except bắt đúng loại ngoại lệ. else chạy khi không lỗi; finally chạy dù có lỗi, thường dùng cho cleanup. Không nên bắt Exception rộng nếu không thể xử lý mọi loại lỗi một cách đúng đắn.",
+              "raise phát sinh ngoại lệ khi điều kiện đầu vào vi phạm hợp đồng. Có thể dùng raise ... from ... để giữ nguyên nguyên nhân gốc khi chuyển loại lỗi. Thông báo lỗi cần nói rõ giá trị hoặc thao tác liên quan nhưng không tiết lộ bí mật."
+            ],
+            "code": "def parse_quantity(text):\n    try:\n        quantity = int(text)\n    except ValueError as error:\n        raise ValueError(\"Số lượng phải là số nguyên\") from error\n    if quantity < 0:\n        raise ValueError(\"Số lượng không được âm\")\n    return quantity\n\nprint(parse_quantity(\"12\"))",
+            "explanation": "Chỉ lỗi chuyển số được bắt và bọc lại bằng thông điệp phù hợp miền nghiệp vụ. Giá trị âm được phát hiện bằng kiểm tra riêng.",
+            "output": "12",
+            "mistakes": [
+              "Dùng except: trần khiến cả KeyboardInterrupt/SystemExit cũng bị nuốt.",
+              "Dùng ngoại lệ để thay thế mọi nhánh điều kiện thông thường."
+            ],
+            "summary": [
+              "Bắt lỗi cụ thể và xử lý có chủ đích.",
+              "else chỉ chạy khi try thành công; finally luôn chạy.",
+              "raise ... from ... giữ chuỗi nguyên nhân."
+            ],
+            "exercises": [
+              "Viết hàm parse ngày theo một định dạng cố định và báo lỗi dễ hiểu.",
+              "Thử input hợp lệ, sai định dạng và số âm; xác định ngoại lệ cho mỗi trường hợp."
+            ]
+          },
+          {
+            "slug": "doc-va-ghi-file",
+            "title": "Đọc và ghi file",
+            "minutes": 40,
+            "objectives": [
+              "Làm việc với tệp bằng context manager và pathlib.",
+              "Chọn mode, encoding và xử lý lỗi I/O."
+            ],
+            "theory": [
+              "open() mở tệp với mode: r đọc, w ghi đè/tạo mới, a nối thêm, x tạo mới và báo lỗi nếu đã tồn tại. Với văn bản, chỉ rõ encoding=\"utf-8\" để xử lý tiếng Việt nhất quán. with đảm bảo file được đóng kể cả khi phát sinh lỗi.",
+              "pathlib.Path biểu diễn đường dẫn đa nền tảng. Đường dẫn tương đối tính từ working directory, không nhất thiết là thư mục chứa mã. Khi ghi dữ liệu có cấu trúc, dùng json.dump/load hoặc csv thay vì tự nối chuỗi dễ sai escape."
+            ],
+            "code": "from pathlib import Path\n\npath = Path(\"ghi_chu.txt\")\npath.write_text(\"Học Python mỗi ngày.\\n\", encoding=\"utf-8\")\ncontent = path.read_text(encoding=\"utf-8\")\nprint(content.strip())",
+            "explanation": "Path.write_text tạo/ghi tệp với UTF-8 và tự quản lý việc mở/đóng. Trong ứng dụng thực tế, hãy cân nhắc thư mục dữ liệu rõ ràng và xử lý OSError khi quyền hoặc ổ đĩa có vấn đề.",
+            "output": "Học Python mỗi ngày.",
+            "mistakes": [
+              "Ghi mode w vào tệp quan trọng mà không biết nó xóa nội dung cũ.",
+              "Bỏ qua encoding khiến tiếng Việt bị giải mã sai trên môi trường khác."
+            ],
+            "summary": [
+              "Dùng with hoặc pathlib để quản lý vòng đời file.",
+              "Chọn mode phù hợp và ghi rõ UTF-8.",
+              "Đường dẫn tương đối phụ thuộc working directory."
+            ],
+            "exercises": [
+              "Ghi danh sách việc cần làm thành JSON rồi đọc lại thành Python object.",
+              "Tạo hàm sao lưu tệp văn bản sang tên mới và xử lý trường hợp nguồn không tồn tại."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "doi-tuong-va-thu-vien",
+        "title": "Đối tượng và thư viện",
+        "lessons": [
+          {
+            "slug": "lap-trinh-huong-doi-tuong",
+            "title": "Lập trình hướng đối tượng",
+            "minutes": 45,
+            "objectives": [
+              "Tạo class, instance, thuộc tính và phương thức.",
+              "Dùng kế thừa khi có quan hệ is-a thực sự."
+            ],
+            "theory": [
+              "class định nghĩa kiểu đối tượng; mỗi instance có trạng thái riêng. __init__ khởi tạo instance và self trỏ tới instance hiện tại. Phương thức là hàm nhận self theo quy ước. Thuộc tính class dùng chung; thuộc tính instance gắn với từng đối tượng.",
+              "Đóng gói nhóm dữ liệu và hành vi có liên quan. Kế thừa phù hợp khi lớp con có thể dùng thay lớp cha mà vẫn giữ hợp đồng. Nếu chỉ muốn dùng lại hành vi, composition thường đơn giản hơn. Tránh mutable class attribute cho dữ liệu riêng từng instance."
+            ],
+            "code": "class Course:\n    def __init__(self, title, lesson_count):\n        self.title = title\n        self.lesson_count = lesson_count\n\n    def summary(self):\n        return f\"{self.title}: {self.lesson_count} bài\"\n\ncourse = Course(\"Python cơ bản\", 9)\nprint(course.summary())",
+            "explanation": "Mỗi Course giữ title và lesson_count riêng. Gọi phương thức qua instance sẽ tự truyền instance làm self.",
+            "output": "Python cơ bản: 9 bài",
+            "mistakes": [
+              "Quên self trong định nghĩa phương thức instance.",
+              "Đặt list/dict mutable ở class body rồi vô tình chia sẻ giữa mọi instance."
+            ],
+            "summary": [
+              "Class mô tả hành vi/thuộc tính; instance chứa trạng thái cụ thể.",
+              "self là quy ước tham chiếu instance.",
+              "Ưu tiên composition nếu quan hệ kế thừa không tự nhiên."
+            ],
+            "exercises": [
+              "Tạo class Book có tiêu đề, tác giả và phương thức hiển thị thông tin.",
+              "Thêm validation để số bài học không âm và viết các ca tạo đối tượng hợp lệ/không hợp lệ."
+            ]
+          },
+          {
+            "slug": "thu-vien-python",
+            "title": "Thư viện Python hữu ích",
+            "minutes": 40,
+            "objectives": [
+              "Tìm đúng module chuẩn cho tác vụ phổ biến.",
+              "Phân biệt thư viện chuẩn với gói bên thứ ba."
+            ],
+            "theory": [
+              "Thư viện chuẩn đi cùng Python, ví dụ pathlib cho đường dẫn, json/csv cho dữ liệu, datetime cho ngày giờ, collections cho cấu trúc chuyên dụng và unittest cho kiểm thử. Dùng tài liệu chính thức để xem chữ ký hàm, phiên bản và ngoại lệ.",
+              "Gói bên thứ ba cài bằng pip trong môi trường ảo. Trước khi thêm dependency, kiểm tra mức độ bảo trì, giấy phép, tương thích và liệu thư viện chuẩn đã giải quyết đủ tốt chưa. Khóa/ghi lại dependency giúp môi trường dự án tái lập được."
+            ],
+            "code": "from collections import Counter\nfrom datetime import date\n\nwords = [\"python\", \"data\", \"python\", \"code\"]\ncounts = Counter(words)\nprint(counts.most_common(1))\nprint(date(2025, 1, 1).isoformat())",
+            "explanation": "Counter đếm phần tử và most_common(1) trả cặp phần tử/tần suất lớn nhất. date.isoformat tạo chuỗi ngày theo dạng ISO.",
+            "output": "[('python', 2)]\n2025-01-01",
+            "mistakes": [
+              "Cài gói toàn cục thay vì trong venv của dự án.",
+              "Import nhầm module do tệp cục bộ trùng tên thư viện chuẩn."
+            ],
+            "summary": [
+              "Thư viện chuẩn bao phủ nhiều tác vụ thông dụng.",
+              "Dùng tài liệu và kiểm tra tương thích trước khi cài gói ngoài.",
+              "Giữ dependency rõ ràng để tái lập môi trường."
+            ],
+            "exercises": [
+              "Dùng Counter để in ba từ phổ biến nhất trong một đoạn văn.",
+              "Dùng pathlib để liệt kê tệp .py trong thư mục được chọn."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "tong-ket-trung-cap",
+        "title": "?n t?p v? th?c h?nh",
+        "lessons": [
+          {
+            "slug": "on-tap-trung-cap",
+            "title": "?n t?p t?ng h?p c?p trung c?p",
+            "minutes": 60,
+            "objectives": [
+              "K?t h?p module, class, file v? exception th?nh m?t lu?ng nh?.",
+              "Thi?t k? d? li?u c? validation v? ??u ra c? th? ki?m tra."
+            ],
+            "theory": [
+              "B?i to?n nh?p/xu?t d? li?u c? nhi?u ranh gi?i l?i: file kh?ng t?n t?i, JSON sai c? ph?p, tr??ng thi?u ho?c sai ki?u. M?i ranh gi?i c?n th?ng b?o ph? h?p; kh?ng n?n ?? l?i b? b? qua ?m th?m.",
+              "T?ch m? h?nh d? li?u kh?i thao t?c file gi?p code d? ki?m th?. V?i v? d? nh?, h?m nh?n d? li?u ?? parse v? tr? k?t qu?; l?p ch? c?n thi?t khi c? tr?ng th?i v? h?nh vi li?n quan.",
+              "M?t CLI ghi ch? c? th? chia th?nh ba ph?n: parse tham s?, nghi?p v? th?m/li?t k?/th?ng k?, v? l?p l?u tr? JSON UTF-8. Khi nhi?u ti?n tr?nh c?ng ghi, file JSON ??n kh?ng cung c?p transaction hay ?i?u ph?i ??ng th?i; ?? l? l?c c?n nh?c database."
+            ],
+            "code": "def summarize_tasks(tasks):\n    total = len(tasks)\n    done = sum(task.get(\"done\") is True for task in tasks)\n    return {\"total\": total, \"done\": done, \"remaining\": total - done}\n\nprint(summarize_tasks([{\"done\": True}, {\"done\": False}]))",
+            "explanation": "Generator expression t?o c?c gi? tr? bool ???c sum; True ???c t?nh nh? 1. K?t qu? l? dictionary m?i, kh?ng s?a danh s?ch tasks.",
+            "output": "{'total': 2, 'done': 1, 'remaining': 1}",
+            "mistakes": [
+              "D?ng task[\"done\"] khi tr??ng c? th? thi?u m? kh?ng c? validation.",
+              "Tr?n ??c file, parse, t?nh to?n v? in trong c?ng m?t h?m l?n."
+            ],
+            "summary": [
+              "Chia ri?ng ??c/parse, validate, x? l? v? tr?nh b?y.",
+              "X? l? d? li?u thi?u c? ch? ??ch.",
+              "H?m thu?n d? ki?m th? h?n ph?n ph? thu?c file ho?c m?ng."
+            ],
+            "exercises": [
+              "??c danh s?ch nhi?m v? t? JSON, ki?m tra ki?u d? li?u r?i xu?t b?o c?o t?ng h?p.",
+              "X?y CLI qu?n l? ghi ch? v?i thao t?c th?m, li?t k? v? th?ng k?; t?ch x? l? d? li?u kh?i ??c/ghi file.",
+              "Vi?t test cho d? li?u r?ng, thi?u kh?a v? d? li?u b?nh th??ng."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "nang-cao",
+    "name": "Nâng cao",
+    "rank": 3,
+    "description": "Đi sâu vào mô hình thực thi, abstraction và quy trình xây dựng phần mềm đáng tin cậy.",
+    "courseTitle": "Python nâng cao và dự án thực tế",
+    "chapters": [
+      {
+        "slug": "lap-trinh-lazy",
+        "title": "Lập trình lazy và tái sử dụng hành vi",
+        "lessons": [
+          {
+            "slug": "iterator-generator",
+            "title": "Iterator và Generator",
+            "minutes": 45,
+            "objectives": [
+              "Giải thích iterable, iterator và giao thức next().",
+              "Dùng yield để tạo dữ liệu theo nhu cầu."
+            ],
+            "theory": [
+              "Iterable cung cấp iterator qua iter(). Iterator trả phần tử kế tiếp qua next() và báo StopIteration khi hết. for tự gọi giao thức này. Generator là iterator được tạo từ hàm có yield; trạng thái hàm được giữ giữa các lần next.",
+              "Generator expression và generator function tránh tạo toàn bộ kết quả cùng lúc, hữu ích với luồng dữ liệu lớn. Chúng dùng một lần; nếu cần duyệt lại phải tạo generator mới hoặc lưu dữ liệu ở nơi khác. Lazy evaluation cũng làm lỗi phát sinh khi phần tử được tiêu thụ, không nhất thiết lúc tạo generator."
+            ],
+            "code": "def even_numbers(limit):\n    number = 0\n    while number <= limit:\n        yield number\n        number += 2\n\nvalues = even_numbers(6)\nprint(next(values))\nprint(list(values))",
+            "explanation": "Lần next đầu lấy 0. Generator tiếp tục từ sau yield, rồi list tiêu thụ các giá trị còn lại cho tới StopIteration.",
+            "output": "0\n[2, 4, 6]",
+            "mistakes": [
+              "Mong generator đã tiêu thụ có thể duyệt lại từ đầu.",
+              "Tạo list khổng lồ dù chỉ cần xử lý từng phần tử một."
+            ],
+            "summary": [
+              "Iterator tạo chuỗi phần tử theo giao thức next.",
+              "yield giữ trạng thái và tạo generator.",
+              "Generator tiết kiệm bộ nhớ nhưng thường chỉ dùng một lần."
+            ],
+            "exercises": [
+              "Viết generator đọc file từng dòng và chỉ yield các dòng không rỗng.",
+              "Tạo pipeline generator lọc số chẵn rồi bình phương mà không tạo list trung gian."
+            ]
+          },
+          {
+            "slug": "decorator",
+            "title": "Decorator",
+            "minutes": 45,
+            "objectives": [
+              "Hiểu decorator là hàm nhận và trả callable.",
+              "Bảo toàn metadata và chuyển tiếp tham số đúng cách."
+            ],
+            "theory": [
+              "Decorator bọc một hàm hoặc class để thêm hành vi mà không sửa trực tiếp phần thân. Cú pháp @decorator tương đương gán tên hàm bằng kết quả decorator. Closure cho phép hàm bọc giữ tham chiếu đến hàm gốc.",
+              "Dùng functools.wraps để bảo toàn __name__, docstring và metadata. Wrapper tổng quát thường nhận *args, **kwargs rồi chuyển cho hàm gốc. Thứ tự nhiều decorator có ý nghĩa vì chúng được lồng từ dưới lên."
+            ],
+            "code": "from functools import wraps\n\ndef announce(function):\n    @wraps(function)\n    def wrapper(*args, **kwargs):\n        print(f\"Đang chạy {function.__name__}\")\n        return function(*args, **kwargs)\n    return wrapper\n\n@announce\ndef add(left, right):\n    return left + right\n\nprint(add(2, 3))",
+            "explanation": "Decorator tạo wrapper, ghi một thông báo rồi trả lại chính kết quả của hàm gốc. wraps giữ metadata của add.",
+            "output": "Đang chạy add\n5",
+            "mistakes": [
+              "Wrapper không return kết quả nên lời gọi mới trả None.",
+              "Bỏ wraps khiến công cụ introspection và thông báo lỗi chỉ thấy tên wrapper."
+            ],
+            "summary": [
+              "Decorator là higher-order function.",
+              "Closure giữ hàm được bọc.",
+              "Dùng wraps và chuyển tiếp args/kwargs."
+            ],
+            "exercises": [
+              "Viết decorator đo thời gian chạy bằng time.perf_counter và trả nguyên kết quả.",
+              "Thử bọc hàm có tham số keyword-only và kiểm tra __name__/__doc__."
+            ]
+          },
+          {
+            "slug": "context-manager",
+            "title": "Context Manager",
+            "minutes": 40,
+            "objectives": [
+              "Dùng with để đảm bảo cleanup.",
+              "Tạo context manager bằng contextlib.contextmanager."
+            ],
+            "theory": [
+              "Context manager định nghĩa thiết lập và dọn dẹp tài nguyên quanh một khối lệnh. with gọi __enter__, chạy thân khối, rồi luôn gọi __exit__, kể cả khi phát sinh ngoại lệ. File object là context manager phổ biến.",
+              "contextlib.contextmanager biến generator thành context manager: mã trước yield là setup, mã sau yield nằm trong finally để dọn dẹp. Nếu cần xử lý hoặc nuốt ngoại lệ, phải làm rõ vì __exit__/context manager có thể thay đổi việc ngoại lệ tiếp tục lan truyền."
+            ],
+            "code": "from contextlib import contextmanager\n\n@contextmanager\ndef managed_name(name):\n    print(f\"Mở {name}\")\n    try:\n        yield name\n    finally:\n        print(f\"Đóng {name}\")\n\nwith managed_name(\"tài nguyên\") as resource:\n    print(f\"Dùng {resource}\")",
+            "explanation": "finally chạy khi khối with kết thúc bình thường hoặc bằng ngoại lệ, nhờ vậy cleanup không bị bỏ qua.",
+            "output": "Mở tài nguyên\nDùng tài nguyên\nĐóng tài nguyên",
+            "mistakes": [
+              "Đặt cleanup sau yield nhưng không ở try/finally nên ngoại lệ bỏ qua bước dọn dẹp.",
+              "Nuốt ngoại lệ trong __exit__ mà không nhận thức rằng caller sẽ tưởng thao tác thành công."
+            ],
+            "summary": [
+              "with quản lý vòng đời tài nguyên.",
+              "Cleanup nên nằm ở vùng bảo đảm chạy.",
+              "Không suppress ngoại lệ nếu chưa có lý do nghiệp vụ."
+            ],
+            "exercises": [
+              "Viết context manager tạm thay đổi working directory rồi khôi phục lại trong finally.",
+              "Thử ném ngoại lệ bên trong with và xác nhận cleanup vẫn chạy."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "du-lieu-va-dich-vu",
+        "title": "Dữ liệu và dịch vụ bên ngoài",
+        "lessons": [
+          {
+            "slug": "xu-ly-du-lieu-nang-cao",
+            "title": "Xử lý dữ liệu nâng cao",
+            "minutes": 50,
+            "objectives": [
+              "Chọn cấu trúc và thuật toán theo kích thước dữ liệu.",
+              "Dùng dataclass và key function để mô hình hóa, sắp xếp."
+            ],
+            "theory": [
+              "Khi dữ liệu lớn, chi phí thuật toán và số lần duyệt quan trọng. Từ điển/set thường hỗ trợ tra cứu trung bình nhanh theo khóa; sắp xếp toàn bộ tốn O(n log n), vì vậy lọc sớm và tránh lặp lồng nhau không cần thiết.",
+              "dataclasses.dataclass tự tạo một số phương thức cho lớp dữ liệu. Nó không tự xác thực dữ liệu; validation vẫn phải viết. Với dữ liệu thiếu hoặc không tin cậy, giữ bước parse/validate riêng và cân nhắc streaming để tránh giữ toàn bộ bản ghi trong bộ nhớ."
+            ],
+            "code": "from dataclasses import dataclass\n\n@dataclass(frozen=True)\nclass Reading:\n    topic: str\n    minutes: int\n\nreadings = [Reading(\"hàm\", 20), Reading(\"list\", 35)]\nranked = sorted(readings, key=lambda item: item.minutes, reverse=True)\nprint([(item.topic, item.minutes) for item in ranked])",
+            "explanation": "dataclass tạo __init__ và biểu diễn hữu ích; frozen=True ngăn gán lại trường sau khi tạo. sorted trả danh sách mới và key xác định tiêu chí sắp xếp.",
+            "output": "[('list', 35), ('hàm', 20)]",
+            "mistakes": [
+              "Cho rằng type annotation tự kiểm tra kiểu lúc runtime.",
+              "Sắp xếp trong place khi cần giữ nguyên thứ tự danh sách đầu vào."
+            ],
+            "summary": [
+              "Đo kích thước dữ liệu và chọn cách xử lý phù hợp.",
+              "Dataclass giảm boilerplate nhưng không thay validation.",
+              "sorted tạo bản sao; list.sort sửa tại chỗ."
+            ],
+            "exercises": [
+              "Tính top 5 chủ đề theo tổng thời lượng bằng dictionary rồi sorted.",
+              "Đọc dữ liệu theo generator và chỉ giữ thống kê cần thiết."
+            ]
+          },
+          {
+            "slug": "lam-viec-voi-api",
+            "title": "Làm việc với API",
+            "minutes": 50,
+            "objectives": [
+              "Gửi HTTP request, đọc status và parse JSON.",
+              "Đặt timeout và xử lý lỗi mạng/HTTP có chủ đích."
+            ],
+            "theory": [
+              "API HTTP trao đổi request/response. Cần xem status code, header, body và định dạng dữ liệu. urllib.request có sẵn trong Python; urlopen nhận timeout để tránh chờ vô hạn. HTTPError biểu diễn một số phản hồi lỗi HTTP, còn URLError thường phản ánh vấn đề kết nối.",
+              "Không giả định response luôn thành công hoặc JSON hợp lệ. Đặt timeout, kiểm tra status/schema và không ghi token bí mật vào mã nguồn/log. Với API có xác thực, lấy credential từ secret store hoặc biến môi trường phía server; tôn trọng rate limit và điều khoản dịch vụ."
+            ],
+            "code": "import json\nfrom urllib.request import Request, urlopen\n\nrequest = Request(\n    \"https://api.github.com/repos/python/cpython\",\n    headers={\"User-Agent\": \"Python-Learning-Hub\"},\n)\nwith urlopen(request, timeout=10) as response:\n    repository = json.load(response)\n    print(response.status, repository[\"full_name\"])",
+            "explanation": "Request thêm User-Agent, urlopen có timeout và with đóng response. Ví dụ truy cập endpoint công khai; chương trình cần bắt HTTPError/URLError khi chạy trong ứng dụng.",
+            "output": "200 python/cpython (kết quả phụ thuộc dịch vụ và thời điểm chạy)",
+            "mistakes": [
+              "Không đặt timeout nên request có thể chờ rất lâu.",
+              "Cho rằng mã 200 bảo đảm payload đúng schema hoặc ghi access token trực tiếp trong tệp Python."
+            ],
+            "summary": [
+              "HTTP status, header và body là các phần riêng.",
+              "Đặt timeout và xử lý lỗi mạng/HTTP.",
+              "Giữ bí mật ngoài source code và kiểm tra response trước khi dùng."
+            ],
+            "exercises": [
+              "Viết hàm lấy dữ liệu JSON từ endpoint công khai, có timeout và chuyển lỗi thành thông báo phù hợp.",
+              "Tách bước gọi mạng khỏi bước xử lý payload để có thể kiểm thử mà không cần internet."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "chat-luong-du-an",
+        "title": "Tổ chức và kiểm thử dự án",
+        "lessons": [
+          {
+            "slug": "to-chuc-du-an",
+            "title": "Tổ chức dự án Python",
+            "minutes": 40,
+            "objectives": [
+              "Sắp xếp source, test và tài nguyên theo trách nhiệm.",
+              "Dùng môi trường ảo và điểm vào chương trình có chủ ý."
+            ],
+            "theory": [
+              "Một dự án nhỏ có thể gồm src/package_name cho mã, tests cho kiểm thử, README cho cách chạy và pyproject.toml cho metadata/cấu hình công cụ. Tên package nên nhất quán và không trùng module chuẩn. Mỗi module cần ranh giới trách nhiệm rõ.",
+              "Không nên tạo quá nhiều tầng thư mục khi dự án còn nhỏ. Dependency cần được khai báo để môi trường khác tái tạo. Tách cấu hình theo môi trường và không commit secret; entry point nên gọi hàm main để logic có thể import/test."
+            ],
+            "code": "# src/studylog/cli.py\ndef main():\n    print(\"StudyLog sẵn sàng\")\n\nif __name__ == \"__main__\":\n    main()",
+            "explanation": "Guard giúp main chỉ chạy khi file được thực thi trực tiếp. Khi import studylog.cli, định nghĩa hàm được nạp nhưng không tự in thông báo.",
+            "output": "Khi chạy trực tiếp: StudyLog sẵn sàng",
+            "mistakes": [
+              "Đặt mọi logic ở cấp module khiến import gây tác dụng phụ.",
+              "Commit .env hoặc dependency máy cá nhân mà không ghi lại trong cấu hình dự án."
+            ],
+            "summary": [
+              "Tổ chức theo trách nhiệm, không theo số lượng thư mục.",
+              "Giữ entry point nhỏ và logic có thể import.",
+              "Không commit secret; ghi dependency rõ ràng."
+            ],
+            "exercises": [
+              "Tổ chức ứng dụng quản lý ghi chú thành model, storage và cli.",
+              "Viết README có lệnh tạo venv, cài dependency, chạy và kiểm thử."
+            ]
+          },
+          {
+            "slug": "kiem-thu-va-toi-uu",
+            "title": "Kiểm thử và tối ưu code",
+            "minutes": 50,
+            "objectives": [
+              "Viết unit test cho hành vi và trường hợp biên.",
+              "Đo hiệu năng trước khi tối ưu."
+            ],
+            "theory": [
+              "Unit test kiểm tra hành vi của đơn vị nhỏ mà không phụ thuộc mạng/file thật nếu có thể. unittest cung cấp TestCase và assertion; tên phương thức bắt đầu bằng test để được phát hiện. Kiểm thử các giá trị bình thường, biên và lỗi kỳ vọng.",
+              "Tối ưu bắt đầu bằng phép đo: cProfile cho thời gian theo hàm, timeit cho phép so sánh đoạn nhỏ. Tập trung thuật toán hoặc I/O lớn nhất; giữ test chạy trước/sau thay đổi. Tối ưu quá sớm làm code khó đọc mà không đem lại cải thiện đáng kể."
+            ],
+            "code": "import unittest\n\ndef normalize_name(value):\n    return \" \".join(value.split()).title()\n\nclass NormalizeNameTests(unittest.TestCase):\n    def test_collapses_spaces_and_capitalizes(self):\n        self.assertEqual(normalize_name(\"  nguyen   an \"), \"Nguyen An\")\n\nif __name__ == \"__main__\":\n    unittest.main()",
+            "explanation": "Test gọi hàm với đầu vào có khoảng trắng thừa và so sánh với kết quả mong đợi. Chạy tệp sẽ báo pass/fail; test này không cần mạng hay database.",
+            "output": "Ran 1 test — OK (nội dung chính xác tùy phiên bản unittest)",
+            "mistakes": [
+              "Test chỉ kiểm tra implementation nội bộ thay vì hành vi người dùng cần.",
+              "Tối ưu dựa trên cảm giác mà không đo hoặc bỏ kiểm thử sau refactor."
+            ],
+            "summary": [
+              "Test đầu vào bình thường, biên và lỗi.",
+              "Test độc lập, lặp lại được.",
+              "Đo trước khi tối ưu và xác nhận lại bằng test."
+            ],
+            "exercises": [
+              "Viết test cho chuỗi rỗng, khoảng trắng và tên có dấu tiếng Việt.",
+              "Dùng cProfile đo một chương trình xử lý list rồi xác định hàm tốn thời gian nhất."
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "du-an-thuc-te",
+        "title": "Dự án thực tế",
+        "lessons": [
+          {
+            "slug": "du-an-thuc-te-python",
+            "title": "Dự án thực tế: nhật ký học tập dòng lệnh",
+            "minutes": 75,
+            "objectives": [
+              "Thiết kế một CLI nhỏ có lưu trữ JSON và kiểm tra dữ liệu.",
+              "Kết hợp module, hàm, exception, file, test và tài liệu."
+            ],
+            "theory": [
+              "Nhật ký học tập cần thao tác thêm mục, liệt kê mục và tổng hợp thời gian. Mô hình một bản ghi nên có ngày, chủ đề, thời lượng và ghi chú; xác thực thời lượng dương và ngày hợp lệ. Dữ liệu phải được lưu bền vững, encoding UTF-8.",
+              "Chia ứng dụng thành model/validation, storage và CLI. Storage chịu trách nhiệm lỗi đọc/ghi; logic tổng hợp nhận dữ liệu và trả kết quả. Viết test cho logic không phụ thuộc terminal trước, sau đó mới thêm giao diện dòng lệnh. README cần ghi rõ hạn chế của file JSON khi nhiều tiến trình cùng ghi."
+            ],
+            "code": "from datetime import date\n\ndef make_entry(topic, minutes, note=\"\"):\n    topic = topic.strip()\n    if not topic:\n        raise ValueError(\"Chủ đề không được để trống\")\n    if minutes <= 0:\n        raise ValueError(\"Thời lượng phải lớn hơn 0\")\n    return {\"date\": date.today().isoformat(),\n            \"topic\": topic, \"minutes\": minutes, \"note\": note.strip()}\n\nentry = make_entry(\"Generator\", 35, \"Đọc từng phần tử\")\nprint(entry[\"topic\"], entry[\"minutes\"])",
+            "explanation": "Hàm tạo bản ghi chuẩn hóa khoảng trắng và từ chối dữ liệu không hợp lệ. Bài tập mở rộng sẽ thêm json.load/dump, argparse và test riêng; đoạn này không tự lưu dữ liệu.",
+            "output": "Generator 35",
+            "mistakes": [
+              "Lưu trực tiếp input chưa kiểm tra và sau đó để dữ liệu sai lan tới báo cáo.",
+              "Gộp parse tham số, ghi file và tính tổng vào một hàm khiến lỗi khó khoanh vùng."
+            ],
+            "summary": [
+              "Mô hình hóa dữ liệu và xác thực tại ranh giới.",
+              "Tách giao diện, nghiệp vụ và lưu trữ.",
+              "Kiểm thử logic độc lập trước khi nối I/O."
+            ],
+            "exercises": [
+              "Hoàn thiện CLI với argparse: add, list và summary; lưu JSON UTF-8.",
+              "Viết unittest cho validation, dữ liệu rỗng và tổng thời lượng; mô tả cách xử lý file hỏng."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
